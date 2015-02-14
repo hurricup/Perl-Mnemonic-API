@@ -6,9 +6,10 @@
 // marked bad aliases with @bad in comments
 
 // data types
-#define perl_scalar  SV
-#define perl_array   AV
-#define perl_hash    HV
+#define perl_scalar     SV
+#define perl_array      AV
+#define perl_hash       HV
+#define perl_hash_entry HE
 
 /********************************** SCALARS ***********************************/
 // fetching variables
@@ -85,5 +86,43 @@
 #define extend_array    av_extend   // void  av_extend(AV*, SSize_t key);
 
 /*********************************** HASHES ***********************************/
-    
+/* NB: 
+    hash element below is an element of hash with key and val. 
+    hash entry is a structure, HE*
+*/
+#define create_hash         newHV       // HV*  newHV();
+#define get_hash_by_name    get_hv      // HV*  get_hv("package::varname", 0);
+#define calc_hash           PERL_HASH   // PERL_HASH(hash, key, klen)
+
+#define set_hash_element_value      hv_store    // SV**  hv_store(HV*, const char* key, U32 klen, SV* val, U32 hash);
+#define get_hash_element_value_ref  hv_fetch    // SV**  hv_fetch(HV*, const char* key, U32 klen, I32 lval);
+#define does_hash_key_exists        hv_exists   // bool  hv_exists(HV*, const char* key, U32 klen);
+#define delete_hash_element         hv_delete   // SV*   hv_delete(HV*, const char* key, U32 klen, I32 flags);
+#define clear_hash                  hv_clear    // void   hv_clear(HV*);
+#define undefine_hash               hv_undef    // void   hv_undef(HV*);
+
+// below are synonims of previous functions, but they are working with scalars as keys, not char*
+#define get_hash_entry          hv_fetch_ent    // HE*     hv_fetch_ent  (HV* tb, SV* key, I32 lval, U32 hash);
+#define set_hash_entry          hv_store_ent    // HE*     hv_store_ent  (HV* tb, SV* key, SV* val, U32 hash);
+#define does_hash_entry_exists  hv_exists_ent   // bool    hv_exists_ent (HV* tb, SV* key, U32 hash);
+#define delete_hash_entry       hv_delete_ent   // SV*     hv_delete_ent (HV* tb, SV* key, I32 flags, U32 hash);
+
+// iterating hash
+#define start_hash_iteration            hv_iterinit     // I32    hv_iterinit(HV*);  /* Prepares starting point to traverse hash table */
+#define get_next_hash_entry             hv_iternext     // HE*    hv_iternext(HV*);  /* Get the next entry, and return a pointer to a                structure that has both the key and value */
+#define get_hash_entry_key              hv_iterkey      // char*  hv_iterkey(HE* entry, I32* retlen); /* Get the key from an HE structure and also return                the length of the key string */
+#define get_hash_entry_key_mortal       hv_iterkeysv    // SV*    hv_iterkeysv  (HE* entry);
+#define get_hash_entry_value            hv_iterval      // SV*    hv_iterval(HV*, HE* entry);            /* Return an SV pointer to the value of the HE               structure */
+#define get_next_hash_entry_key_value   hv_iternextsv   // SV*    hv_iternextsv(HV*, char** key, I32* retlen); /* This convenience routine combines hv_iternext,	       hv_iterkey, and hv_iterval.  The key and retlen	       arguments are return values for the key and its	       length.  The value is returned in the SV* argument */
+
+// hash entry, these looks pretty similar 
+// HePV(HE* he, STRLEN len)
+// HeVAL(HE* he)
+// HeHASH(HE* he)
+// HeSVKEY(HE* he)
+// HeSVKEY_force(HE* he)
+// HeSVKEY_set(HE* he, SV* sv)
+// HeKEY(HE* he)
+// HeKLEN(HE* he)    
+
 #endif
