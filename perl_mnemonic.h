@@ -1,29 +1,41 @@
+/*
+
+    This is my attempt to make mnemonic perl api names
+    You may use this software on the same terms as Perl itself
+    git@github.com:hurricup/Perl-Mnemonic-API.git
+    (c) 2015 Alexandr Evstigneev
+
+*/
 #ifndef PERL_FRIENDLY_API
 #define PERL_FRIENDLY_API
+
+#define true 1
+#define false 0
 
 // TODO:
 // we should make a longnames and shortnames with directive
 // marked bad aliases with @bad in comments
 
 // data types
-#define perl_scalar     SV
-#define perl_array      AV
-#define perl_hash       HV
-#define perl_hash_entry HE
+typedef SV  perl_scalar;
+typedef AV  perl_array;
+typedef HV  perl_hash;
+typedef HE  perl_hash_entry;
 
 /********************************** SCALARS ***********************************/
 // fetching variables
 #define get_scalar_by_name  get_sv  // SV*  get_sv("package::varname", 0);
 
 // Creating scalars
-#define create_scalar                       newSV       // SV*  newSV(int);
-#define create_scalar_from_int              newSViv     // SV*  newSViv(IV);
-#define create_scalar_from_uint             nevSVuv     // SV*  newSVuv(UV);
-#define create_scalar_from_double           newSVnv     // SV*  newSVnv(double);
-#define create_scalar_from_string           newSVpv     // SV*  newSVpv(const char*, STRLEN);
-#define create_scalar_from_string_sized     newSVpvn    // SV*  newSVpvn(const char*, STRLEN); @bad
-#define create_scalar_from_string_formatted newSVpvf    // SV*  newSVpvf(const char*, ...);    @bad
-#define create_scalar_from_scalar           newSVsv     // SV*  newSVsv(SV*);
+#define create_scalar                       newSV           // SV*  newSV(int);
+#define create_scalar_from_int              newSViv         // SV*  newSViv(IV);
+#define create_scalar_from_uint             nevSVuv         // SV*  newSVuv(UV);
+#define create_scalar_from_double           newSVnv         // SV*  newSVnv(double);
+#define create_scalar_from_string           newSVpv         // SV*  newSVpv(const char*, STRLEN);
+#define create_scalar_from_string_sized     newSVpvn        // SV*  newSVpvn(const char*, STRLEN); @bad
+#define create_scalar_from_string_formatted newSVpvf        // SV*  newSVpvf(const char*, ...);    @bad
+#define create_mortal_scalar_from_scalar    sv_mortalcopy   // SV*  sv_mortalcopy(SV *const oldsv)
+#define create_scalar_from_scalar           newSVsv         // SV*  newSVsv(SV*);
 
 // modifying scalars
 #define set_scalar_int                      sv_setiv    // void  sv_setiv(SV*, IV);
@@ -115,6 +127,9 @@
 #define get_hash_entry_value            hv_iterval      // SV*    hv_iterval(HV*, HE* entry);            /* Return an SV pointer to the value of the HE               structure */
 #define get_next_hash_entry_key_value   hv_iternextsv   // SV*    hv_iternextsv(HV*, char** key, I32* retlen); /* This convenience routine combines hv_iternext,	       hv_iterkey, and hv_iterval.  The key and retlen	       arguments are return values for the key and its	       length.  The value is returned in the SV* argument */
 
+#define mortalize_scalar    sv2mortal   // SV*  sv_2mortal(SV *const sv)
+#define is_scalar_utf8      SvUTF8      // U32  SvUTF8(SV* sv)
+
 // hash entry, these looks pretty similar 
 // HePV(HE* he, STRLEN len)
 // HeVAL(HE* he)
@@ -124,5 +139,7 @@
 // HeSVKEY_set(HE* he, SV* sv)
 // HeKEY(HE* he)
 // HeKLEN(HE* he)    
+
+#define perl_malloc Newx    // void	Newx(void* ptr, int nitems, type)
 
 #endif
